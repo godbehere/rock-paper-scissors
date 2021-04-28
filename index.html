@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Rock Paper Scissors</title>
+	
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet"> 
+	
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	
+	<div class='container'>
+		<div id='play-buttons'>
+			<img data-selection='rock' class='img-button' src='./media/rock.png' alt='rock'>
+			<img data-selection='paper' class='img-button' src='./media/paper.png' alt='paper'>
+			<img data-selection='scissors' class='img-button' src='./media/scissors.png' alt='scissors'>
+		</div>
+
+		<div id='output'>
+			<h1 id='outcome'></h1>	
+			<h1 id='human-score'></h1>
+			<h1 id='computer-score'></h1>
+		</div>
+	</div>
+	
+	<script>
+    
+		function computerPlay() {
+			let randomSelection = Math.floor(Math.random() * Math.floor(3));
+			if (randomSelection == 0) {
+				return 'rock';
+			} else if (randomSelection == 1) {
+				return 'paper';
+			} else {
+				return 'scissors'
+			}
+		}
+
+		function playRound(playerSelection, computerSelection) {
+			playerSelection = playerSelection.toLowerCase();
+			computerSelection = computerSelection.toLowerCase();
+			if (playerSelection == 'rock') {  
+				if (computerSelection == 'rock') {
+					return -1//'It is a Tie! You both picked Rock';
+				} else if (computerSelection == 'paper') {
+					return 0//'You Lose! Paper beats Rock';
+				} else {
+					return 1//'You Win! Rock beats Scissors';
+				}
+			} else if (playerSelection == 'paper') {
+				if (computerSelection == 'rock') {
+					return 1//'You Win! Paper beats Rock';
+				} else if (computerSelection == 'paper') {
+					return -1//'It is a Tie! You both picked Paper';
+				} else {
+					return 0//'You Lose! Scissors beats Paper';
+				}
+			} else {
+				if (computerSelection == 'rock') {
+					return 0//'You Lose! Rock beats Scissors';
+				} else if (computerSelection == 'paper') {
+					return 1//'You Win! Scissors Beats Paper';
+				} else {
+					return -1//'It is a Tie! You both picked Scissors';
+				}
+			}  
+		}
+
+		function game() {
+
+			let numberOfGames = 5;
+
+			for (let i = 1; i <= numberOfGames; i++) {
+				let playerSelection = prompt('Rock, Paper, or Scissors?');
+				let computerSelection = computerPlay();
+				console.log(`Round ${i}:\n ${playRound(playerSelection, computerSelection)}`);
+			}
+
+		}
+		
+		function play(e) {
+			const humanSelection = this.dataset.selection;
+			const computerSelection = computerPlay();
+			const outcome = playRound(humanSelection, computerSelection)
+			this.classList.add('clicked');
+			if (outcome == 1) {
+				outcomeDisp.textContent = 'You win! ' + humanSelection + ' beats ' + computerSelection;
+				humanScore++;
+			} else if (outcome == 0) {
+				outcomeDisp.textContent = 'You lose! ' + computerSelection + ' beats ' + humanSelection;
+				computerScore++
+			} else {
+				outcomeDisp.textContent = 'It is a tie! You both picked ' + humanSelection;
+			}
+			humanScoreDisp.textContent = humanScore;
+			computerScoreDisp.textContent = computerScore;
+		}
+		
+		function removeTransition(e) {
+			if (e.propertyName !== 'transform') return;
+			this.classList.remove('clicked');
+		}
+		
+		const buttons = document.querySelectorAll('.img-button');
+		const humanScoreDisp = document.querySelector('#human-score');
+		const computerScoreDisp = document.querySelector('#computer-score');
+		const outcomeDisp = document.querySelector('#outcome');
+		
+		var humanScore = 0;
+		var computerScore = 0;
+		
+		buttons.forEach(button => button.addEventListener('click', play));
+		buttons.forEach(button => button.addEventListener('transitionend', removeTransition));
+
+	</script>
+</body>
+</html>
